@@ -1,0 +1,42 @@
+name: Build macOS Application
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'canreg5_pii_tokenizer.py'
+      - '.github/workflows/build-mac.yml'
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller pandas openpyxl
+
+      - name: Build macOS App
+        run: |
+          # The --windowed flag creates a proper macOS .app bundle
+          pyinstaller --windowed --noconfirm --name CanReg5_PII_Tokenizer canreg5_pii_tokenizer.py
+
+      - name: Zip the Application
+        run: |
+          # We must zip the .app folder so it downloads cleanly from GitHub
+          cd dist
+          zip -r CanReg5_PII_Tokenizer_macOS.zip CanReg5_PII_Tokenizer.app
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CanReg5_PII_Tokenizer_macOS
+          path: dist/CanReg5_PII_Tokenizer_macOS.zip
