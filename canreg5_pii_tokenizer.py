@@ -16,7 +16,8 @@ class CanReg5PIIProcessor:
             'Email Address',
             'Home Address',
             'Date of Birth',
-            'Next of Kin Information'
+            'Next of Kin Information', 'Pathology Report Id'
+
         ]
         self.selected_columns = []
         self.input_file = None
